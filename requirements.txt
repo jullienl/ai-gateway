@@ -1,0 +1,5 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+github-copilot-sdk>=1.0
+openai>=1.50
+anthropic>=0.34

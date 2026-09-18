@@ -1,0 +1,12 @@
+# Keep the image small and the build context clean.
+__pycache__/
+*.pyc
+.venv/
+.env
+.env.*
+*.md
+GUIDE.md
+README.md
+deploy/
+.git/
+.gitignore

@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Local secrets -- never commit a PAT or API key.
+.env
+.env.*
+tenants.json
+copilot-pat.txt
+*.pem
+
+# OS/editor noise
+.DS_Store

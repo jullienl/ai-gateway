@@ -1,0 +1,6 @@
+{
+  "personal": "github_pat_REPLACE_WITH_YOUR_PAT",
+  "team-01": "github_pat_REPLACE_WITH_BOT01_PAT",
+  "team-02": "github_pat_REPLACE_WITH_BOT02_PAT",
+  "_comment": "Copy to tenants.json (gitignored) and fill in one fine-grained PAT per tenant. tenant ids must be ACA-secret-safe lowercase [a-z0-9-]. Remove this _comment key."
+}
