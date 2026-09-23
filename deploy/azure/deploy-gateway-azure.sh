@@ -2,8 +2,8 @@
 #
 # Deploy the AI Gateway to Azure Container Apps.
 #
-# The gateway is deployed with INTERNAL ingress only (reachable from other apps
-# in the same Container Apps environment — never public; the gateway has no
+# The AI gateway is deployed with INTERNAL ingress only (reachable from other apps
+# in the same Container Apps environment — never public; the AI gateway has no
 # inbound authentication of its own). It authenticates to GitHub Copilot with a
 # per-user fine-grained PAT (Copilot enabled), stored as a Container Apps secret.
 # There is NO shared Copilot service token, so this PAT runs under that account's
@@ -11,15 +11,14 @@
 #
 # Prerequisites:
 #   - az CLI logged in (az login), an active subscription selected.
-#   - The image published to a registry ACA can pull (GHCR works). Build+push:
-#       docker build -t ghcr.io/<your-org>/ai-gateway:1.0.1 .
-#       docker push  ghcr.io/<your-org>/ai-gateway:1.0.1
+#   - The published image is available in GHCR. Customers do not build or push
+#     the image as part of deployment.
 #   - COPILOT_PAT set in your shell to the fine-grained PAT (do NOT hardcode it):
 #       export COPILOT_PAT=github_pat_xxx
 #
 # Multi-tenant modes — one Copilot PAT per caller (tenant):
 #
-#   A) Key Vault (RECOMMENDED — no PAT ever on your laptop). The gateway app
+#   A) Key Vault (RECOMMENDED — no PAT ever on your laptop). The AI gateway app
 #      references each PAT straight from Key Vault via a managed identity, so
 #      the tokens live ONLY in Azure. You set:
 #        export KEYVAULT=<your-key-vault>     # an existing Key Vault (RBAC mode)
@@ -36,7 +35,7 @@
 #        export TENANTS_FILE=./tenants.json    # requires jq
 #      Use this only where keeping the PATs in a file is acceptable.
 #
-#   Both mount one secret per tenant as a file the gateway reads per request, and
+#   Both mount one secret per tenant as a file the AI gateway reads per request, and
 #   set COPILOT_REQUIRE_TENANT=1 so tenant-less requests are rejected. Tenant ids
 #   must be ACA-secret-safe: lowercase [a-z0-9-].
 #
@@ -49,7 +48,7 @@ RG="${RG:-rg-ai-gateway}"           # override to reuse an existing group
 LOC="${LOC:-westeurope}"
 ACA_ENV="${ACA_ENV:-aca-ai-gateway}" # use the SAME environment as the caller
 APP_NAME="${APP_NAME:-ai-gateway}"
-IMAGE="${IMAGE:-ghcr.io/<your-org>/ai-gateway:1.0.1}"
+IMAGE="${IMAGE:-ghcr.io/jullienl/ai-gateway:1.0.1}"
 TARGET_PORT="${TARGET_PORT:-8000}"
 
 # Private GHCR pull (optional). Set both to let ACA pull a private image:
@@ -149,7 +148,7 @@ elif [[ -n "$TENANTS_FILE" ]]; then
   done < <(jq -r 'keys[]' "$TENANTS_FILE")
 
   # Mount all secrets as files under TENANT_MOUNT (file name == tenant id),
-  # then point the gateway at that directory and require a tenant on every call.
+  # then point the AI gateway at that directory and require a tenant on every call.
   VOLUME_ARGS=(--secret-volume-mount "$TENANT_MOUNT")
   ENV_ARGS=("COPILOT_TENANT_TOKENS_DIR=$TENANT_MOUNT" "COPILOT_REQUIRE_TENANT=1")
   echo ">> Multi-tenant mode: ${#SECRET_ARGS[@]} bot PAT(s) from $TENANTS_FILE"
@@ -170,7 +169,7 @@ az containerapp create \
   "${REGISTRY_ARGS[@]}" \
   -o none
 
-# Internal FQDN other apps in the same environment use to reach the gateway.
+# Internal FQDN other apps in the same environment use to reach the AI gateway.
 FQDN="$(az containerapp show --resource-group "$RG" --name "$APP_NAME" \
   --query properties.configuration.ingress.fqdn -o tsv)"
 
@@ -190,6 +189,6 @@ if [[ -n "$KEYVAULT" || -n "$TENANTS_FILE" ]]; then
   echo "     Each tenant runs under its own PAT/quota. Tenant-less = 400."
   [[ -n "$KEYVAULT" ]] && echo "     PATs referenced from Key Vault '$KEYVAULT' (none stored locally)."
 else
-  echo " NOTE: the gateway runs under YOUR Copilot identity/quota (per-user PAT)."
+  echo " NOTE: the AI gateway runs under YOUR Copilot identity/quota (per-user PAT)."
   echo "       For several callers, redeploy with KEYVAULT=<kv> TENANTS=team-01,..."
 fi

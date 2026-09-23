@@ -1,4 +1,4 @@
-"""GitHub Copilot provider -- the gateway's default and original backend.
+"""GitHub Copilot provider -- the AI gateway's default and original backend.
 
 This is the only provider with per-tenant PAT resolution and persistent,
 server-side sessions, both of which are Copilot-runtime features with no

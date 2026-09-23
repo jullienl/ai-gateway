@@ -1,5 +1,9 @@
-fastapi>=0.115
-uvicorn[standard]>=0.30
-github-copilot-sdk>=1.0
-openai>=1.50
-anthropic>=0.34
+# Compatible-release pins (~=): allow patch/minor updates within the tested
+# major version, but never a silent major bump that could break the SDK
+# integration (the Copilot SDK's native runtime.node addon in particular is
+# sensitive to this). Bump the base version deliberately, not implicitly.
+fastapi~=0.115
+uvicorn[standard]~=0.30
+github-copilot-sdk~=1.0
+openai~=1.50
+anthropic~=0.34

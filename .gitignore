@@ -1,6 +1,8 @@
 # Python
 __pycache__/
 *.pyc
+.pytest_cache/
+*.db
 .venv/
 
 # Local secrets -- never commit a PAT or API key.
@@ -9,6 +11,7 @@ __pycache__/
 tenants.json
 copilot-pat.txt
 *.pem
+docs/Private/
 
 # OS/editor noise
 .DS_Store

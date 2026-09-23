@@ -1,7 +1,7 @@
 """Anthropic provider -- stateless Messages API backend.
 
 Auth: ANTHROPIC_API_KEY (or ANTHROPIC_API_KEY_FILE), file-first like every
-other secret in this gateway.
+other secret in this AI gateway.
 
 Same statelessness caveat as the OpenAI provider: `session_id` is accepted but
 unused, every call is a single turn. Same no-multi-tenant caveat: `tenant`

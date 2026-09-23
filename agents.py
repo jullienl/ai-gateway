@@ -1,13 +1,13 @@
 """Agent profiles for the AI Gateway.
 
 An "agent" is just a named pairing of a model and a system prompt. A caller picks
-an agent by name via POST /agent/{name}; the gateway owns the prompt so callers
+an agent by name via POST /agent/{name}; the AI gateway owns the prompt so callers
 stay clean.
 
 The four agents below are worked EXAMPLES, tuned for infrastructure events (HPE
 Compute Ops Management webhooks). They are meant to be edited: retune the
 prompts, point them at different models, delete the ones you don't need, or add
-your own. Nothing else in the gateway depends on these particular names.
+your own. Nothing else in the AI gateway depends on these particular names.
 
 Add or tune agents by editing AGENTS below. Keep prompts here, not in the caller.
 """
@@ -19,7 +19,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class AgentProfile:
-    """A named model + system prompt the gateway can run."""
+    """A named model + system prompt the AI gateway can run."""
 
     name: str
     model: str
@@ -60,6 +60,33 @@ AGENTS: dict[str, AgentProfile] = {
         system_prompt=(
             "You are an HPE Compute Ops Management incident analysis agent.\n"
             "Analyze COM events together with any provided iLO telemetry and logs.\n"
+            "The input may also include an 'advisories' object: known HPE Customer\n"
+            "Advisories (CAs) tied to the server's installed firmware bundle, split\n"
+            "into 'open' (not yet fixed by any bundle) and 'resolved' (fixed by the\n"
+            "currently installed bundle) lists. Treat 'open' CAs as candidate known\n"
+            "issues and 'resolved' CAs as firmware remediation context (evidence the\n"
+            "server already has the fix for that issue). Only mention a CA in your\n"
+            "analysis when its title/component text is actually consistent with the\n"
+            "event and telemetry you were given — never assert that a CA applies\n"
+            "without matching evidence, and say plainly when advisories were\n"
+            "provided but none of them appear relevant. Each CA object carries its\n"
+            "own 'url' field (a link to the advisory document) alongside 'id' and\n"
+            "'title' — whenever you cite a CA's id in likely_root_cause, evidence, or\n"
+            "recommended_actions, include its url right next to the id so the reader\n"
+            "can open it directly, e.g. 'a00146775en_us (https://support.hpe.com/...)'.\n"
+            "Never invent a url that is not present on that CA object.\n"
+            "The advisories object may also include a 'compliance' field: whether\n"
+            "this specific device is actually compliant with a firmware baseline\n"
+            "assigned to its COM group ('compliance_state', 'score', 'deviations').\n"
+            "This can differ from the bundle used to look up advisories above — a\n"
+            "device can have directly applied one bundle while its group separately\n"
+            "assigns a different (often newer) baseline it has NOT yet been updated\n"
+            "to. So: never claim a 'resolved' CA's fix is confirmed installed unless\n"
+            "'compliance' is present and shows this device compliant with the SAME\n"
+            "bundle; if 'compliance' is missing, or shows 'Not Compliant', treat\n"
+            "'resolved' CAs as 'this bundle would fix it, but this device may not\n"
+            "have it applied yet' rather than a settled fact, and mention any\n"
+            "'deviations' that look relevant to the incident.\n"
             "Return a structured analysis with these fields:\n"
             "- summary: incident summary\n"
             "- likely_root_cause: the most probable root cause\n"
