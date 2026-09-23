@@ -74,11 +74,11 @@ customized the agents.
 The public image is published to GHCR:
 
 ```text
-ghcr.io/jullienl/ai-gateway:1.0.1
+ghcr.io/jullienl/ai-gateway:1.0.2
 ```
 
-Replace `1.0.1` with the release version you want. The published package is
-public and can be pulled directly from GHCR.
+This example uses release `1.0.2`. The published package is public and can be
+pulled directly from GHCR.
 
 Customers do not need to clone this repository, build an image, or publish an
 image.
@@ -88,12 +88,12 @@ image.
 The following example uses Copilot with a mounted secret file:
 
 ```bash
-docker pull ghcr.io/jullienl/ai-gateway:1.0.1
+docker pull ghcr.io/jullienl/ai-gateway:1.0.2
 
 docker run -d --name ai-gateway -p 8000:8000 \
   -v /run/secrets/copilot_pat:/run/secrets/copilot_pat:ro \
   -e COPILOT_GITHUB_TOKEN_FILE=/run/secrets/copilot_pat \
-  ghcr.io/jullienl/ai-gateway:1.0.1
+  ghcr.io/jullienl/ai-gateway:1.0.2
 ```
 
 For an OpenAI-compatible on-prem model:
@@ -104,7 +104,7 @@ docker run -d --name ai-gateway -p 8000:8000 \
   -e AI_PROVIDER=openai \
   -e OPENAI_BASE_URL=https://model-server.example.com/v1 \
   -e OPENAI_API_KEY_FILE=/run/secrets/model_api_key \
-  ghcr.io/jullienl/ai-gateway:1.0.1
+  ghcr.io/jullienl/ai-gateway:1.0.2
 ```
 
 Keep secret files outside the image and do not commit them.
@@ -114,7 +114,7 @@ Keep secret files outside the image and do not commit them.
 ```yaml
 services:
   ai-gateway:
-    image: ghcr.io/jullienl/ai-gateway:1.0.1
+    image: ghcr.io/jullienl/ai-gateway:1.0.2
     ports:
       - "8000:8000"
     environment:
@@ -287,7 +287,7 @@ Set the deployment values before running it:
 export RG=<resource-group>
 export ACA_ENV=<container-apps-environment>
 export APP_NAME=ai-gateway
-export IMAGE=ghcr.io/jullienl/ai-gateway:1.0.1
+export IMAGE=ghcr.io/jullienl/ai-gateway:1.0.2
 export COPILOT_PAT=<copilot-token>
 ./deploy/azure/deploy-gateway-azure.sh
 ```
@@ -339,7 +339,7 @@ docker run -d --name ai-gateway -p 8000:8000 \
   -v "$(pwd)/copilot-tenants:/run/copilot-tenants:ro" \
   -e COPILOT_TENANT_TOKENS_DIR=/run/copilot-tenants \
   -e COPILOT_REQUIRE_TENANT=1 \
-  ghcr.io/jullienl/ai-gateway:1.0.1
+  ghcr.io/jullienl/ai-gateway:1.0.2
 ```
 
 Call the gateway with the matching tenant:

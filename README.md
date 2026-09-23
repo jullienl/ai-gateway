@@ -79,11 +79,11 @@ The agent name is part of the request URL, for example `POST /agent/com-rca`.
 The published image is available from GHCR:
 
 ```text
-ghcr.io/jullienl/ai-gateway:1.0.1
+ghcr.io/jullienl/ai-gateway:1.0.2
 ```
 
-Replace `1.0.1` with the release version you want. The published package is
-public and can be pulled directly from GHCR.
+This example uses release `1.0.2`. The published package is public and can be
+pulled directly from GHCR.
 
 ### Run with Docker
 
@@ -91,12 +91,12 @@ The example below uses GitHub Copilot. Configure a different backend with the
 environment variables in [Configuration](#configuration).
 
 ```bash
-docker pull ghcr.io/jullienl/ai-gateway:1.0.1
+docker pull ghcr.io/jullienl/ai-gateway:1.0.2
 
 docker run -d --name ai-gateway -p 8000:8000 \
   -v /run/secrets/copilot_pat:/run/secrets/copilot_pat:ro \
   -e COPILOT_GITHUB_TOKEN_FILE=/run/secrets/copilot_pat \
-  ghcr.io/jullienl/ai-gateway:1.0.1
+  ghcr.io/jullienl/ai-gateway:1.0.2
 ```
 
 Keep credentials in mounted secret files where possible. Do not bake secrets
@@ -107,7 +107,7 @@ into an image or commit them to a repository.
 ```yaml
 services:
   ai-gateway:
-    image: ghcr.io/jullienl/ai-gateway:1.0.1
+    image: ghcr.io/jullienl/ai-gateway:1.0.2
     ports:
       - "8000:8000"
     environment:
